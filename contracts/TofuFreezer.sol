@@ -142,16 +142,18 @@ contract TofuFreezer is TRC20FreezerOps {
         emit TokensUnfrozen(member, amount);
     }
 
-    function listFrozenRecords(address member) public view returns(uint256[] memory packedRecs) {
+    function listFrozenRecords(address member) public view returns(uint64[] memory expiryTimestamps, uint128[] memory amounts) {
         FreezeLog[] storage logs = freezeLedger[member].logs;
 
         uint64 size = uint64(logs.length);
-        packedRecs = new uint256[](size);
+        expiryTimestamps = new uint64[](size);
+        amounts = new uint128[](size);
 
         if (size > 0) {
             for (uint64 i = 0; i < size; i++) {
                 FreezeLog storage l = logs[i];
-                packedRecs[i] = pack(l.amount, uint128(l.expiryTimestamp));
+                expiryTimestamps[i] = l.expiryTimestamp;
+                amounts[i] = l.amount;
             }
         }
     }
@@ -162,10 +164,6 @@ contract TofuFreezer is TRC20FreezerOps {
 
     function getMaxExpiry(address member) public view returns(uint64) {
         return freezeLedger[member].maxExpiryTs;
-    }
-
-    function pack(uint128 a, uint128 b) private pure returns(uint256) {
-        return (uint256(a) << 128) | uint256(b);
     }
 
 }

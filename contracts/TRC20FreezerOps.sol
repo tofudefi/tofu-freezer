@@ -37,7 +37,7 @@ interface TRC20FreezerOps {
      * @dev Returns records of frozen funds for member. Returns zero length array if no freezes.
      * Array elements are uint256 numbers in which 2 uint128 numbers are packed: first is frozen amount, second is expiryTimestamp.
     */
-    function listFrozenRecords(address member) external view returns(uint256[] memory);
+    function listFrozenRecords(address member) external view returns(uint64[] memory expiryTimestamps, uint128[] memory amounts);
 
     /**
      * @dev Returns total amount of frozen tokens for member. If no such funds returns 0.
